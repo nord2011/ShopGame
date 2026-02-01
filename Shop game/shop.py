@@ -1,5 +1,5 @@
 class Product:
-    def __init__(self, name, purchase_price, sell_price, quantity=0, stak=False):
+    def __init__(self, name, purchase_price, sell_price, quantity=1, stak=False):
         self.name = name
         self.purchase_price = purchase_price
         self.sell_price = sell_price
@@ -70,7 +70,7 @@ class Player:
         print(f"Баланс: {self.balance}, на складе: {product.quantity} шт.")
         return True
 
-    def sell(self, product_name, quantity_to_sell):
+    def sell_by_product_name(self, product_name, quantity_to_sell):
         """
         Продать товар
 
@@ -109,6 +109,15 @@ class Player:
 
         return True
 
+    def sell_by_product(self, product):
+
+        self.sell_by_product_name(product.name, quantity_to_sell=1)
+
+    def sell(self, product_idx):
+        prod_name = self.inventory[product_idx].name
+        self.sell_by_product_name(prod_name, quantity_to_sell=1)
+
+
     def add_product_to_market(self, product):
         """Добавить товар в ассортимент (в инвентарь)"""
         self.inventory.append(product)
@@ -128,6 +137,15 @@ class Player:
             print(f"{i}. {[product.name]}")
         print()
 
+class Shop:
+    def __init__(self, name):
+        self.name = name
+        self.shop_list = [
+            Product(name="Меч", purchase_price=200, sell_price=160, stak=False),
+            Product(name="Апельсин", purchase_price=50, sell_price=30, quantity= 10, stak=True),
+            Product(name="Лук", purchase_price=350, sell_price=270, stak=False)
+
+        ]
 
 # Демонстрация работы программы
 def main():
