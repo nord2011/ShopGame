@@ -31,8 +31,9 @@ def more_button_click():
     del_button.pack(side="bottom", fill="x", padx=0, pady=0)
 
 def sell_button_click():
-    player.inventory.pop(0)
-    player.balance += product.sell_price
+    for product in player.inventory:
+        player.inventory.pop(inventory_list.index(product.name))
+        player.balance += product.sell_price
 
     update_balance()
     update_inventory()
@@ -172,5 +173,6 @@ inventory_list.pack(fill="x")
 
 update_balance()
 update_inventory()
+
 
 window.mainloop()
