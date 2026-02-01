@@ -4,10 +4,16 @@ import shop
 
 
 player = shop.Player(name="Игрок", initial_balance=1000, max_storage=500)
+
 apple = shop.Product(name="Яблоко", purchase_price=50, sell_price=30, quantity=2, stak=True)
 Arbyz = shop.Product(name="Арбуз", purchase_price=100, sell_price=80, quantity=5, stak=True)
+Sword = shop.Product(name="Меч", purchase_price=200, sell_price=160, stak=False)
+
+Shop = shop.Shop(name="Магазин")
+
 player.inventory.append(apple)
 player.inventory.append(Arbyz)
+player.inventory.append(Sword)
 
 def update_balance():
     balance.config(text=f"${player.balance}")
@@ -17,6 +23,10 @@ def update_inventory():
 
     for product in player.inventory:
         inventory_list.insert(END, f"{product.name} // Стоимость продажи: {product.sell_price} // Количество: {product.quantity}")
+
+def update_Shop_list():
+    for shop in Shop.shop_list:
+        pass
 
 
 
@@ -31,15 +41,26 @@ def more_button_click():
     del_button.pack(side="bottom", fill="x", padx=0, pady=0)
 
 def sell_button_click():
-    for product in player.inventory:
-        player.inventory.pop(inventory_list.index(product.name))
-        player.balance += product.sell_price
+    del_prod = inventory_list.curselection()
+    del_prod_idx = del_prod[0]
+    """if player.inventory[del_prod_idx].stak:
+        player.inventory[del_prod_idx].quantity -= 1
+        player.balance += player.inventory[del_prod_idx].sell_price
+    else:
+        player.balance += player.inventory[del_prod_idx].sell_price
+        player.inventory.pop(del_prod_idx)"""
+    player.sell(del_prod_idx)
+
+
 
     update_balance()
     update_inventory()
 
 def buy_button_click():
+
+
     update_balance()
+    update_inventory()
 
 def add_button_click():
     pass
@@ -111,7 +132,8 @@ sell_button = Button(right_panel,
                      font=("Comic Sans MS", 20, "bold"),
                      bd=6,
                      image=sell_button_image,
-                    compound="right")
+                    compound="right",
+                     command=sell_button_click)
 sell_button.pack(side="bottom", fill="x", padx=0, pady=20)
 
 more_button = Button(right_panel,
@@ -151,8 +173,8 @@ back_button = Button(right_panel,
 main_area = Frame(window, bg="yellow")
 main_area.pack(expand=True, fill="both")
 
-double_area = Frame(main_area, bg="black", bd=6, height=170)
-double_area.pack(fill="x", side="bottom")
+bottom_area = Frame(main_area, bg="black", bd=6, height=170)
+bottom_area.pack(fill="x", side="bottom")
 
 list_frame = Frame(main_area,
                    bg="black",)
@@ -171,8 +193,24 @@ inventory_list = Listbox(list_frame,
                          fg="white")
 inventory_list.pack(fill="x")
 
+buy_list_label = Label(bottom_area,
+                       text="Купить:",
+                       bg="black",
+                       fg="white",
+                       font=("Comic Sans MS", 20, "bold"))
+buy_list_label.pack(fill="x", side="top")
+
+buy_list = Listbox(bottom_area,
+                         height=5,
+                         bg="black",
+                         fg="white")
+buy_list.pack(fill="x", side="bottom")
+
+
+
+
+
 update_balance()
 update_inventory()
-
 
 window.mainloop()
