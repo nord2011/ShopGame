@@ -7,7 +7,7 @@ player = shop.Player(name="Игрок", initial_balance=1000, max_storage=500)
 
 apple = shop.Product(name="Яблоко", purchase_price=50, sell_price=30, quantity=2, stak=True)
 Arbyz = shop.Product(name="Арбуз", purchase_price=100, sell_price=80, quantity=5, stak=True)
-Sword = shop.Product(name="Меч", purchase_price=200, sell_price=160, stak=False)
+Sword = shop.Product(name="Меч Хуже", purchase_price=200, sell_price=160, stak=False)
 
 Shop = shop.Shop(name="Магазин")
 
@@ -21,12 +21,17 @@ def update_balance():
 def update_inventory():
     inventory_list.delete(0, END)
 
+
     for product in player.inventory:
         inventory_list.insert(END, f"{product.name} // Стоимость продажи: {product.sell_price} // Количество: {product.quantity}")
 
+
+
 def update_Shop_list():
+    buy_list.delete(0, END)
+
     for shop in Shop.shop_list:
-        pass
+        buy_list.insert(END,f"{shop.name} // Стоимость покупки: {shop.purchase_price}// Стоимость продажи: {shop.sell_price} // Количество: {shop.quantity}")
 
 
 
@@ -55,12 +60,16 @@ def sell_button_click():
 
     update_balance()
     update_inventory()
+    update_Shop_list()
 
 def buy_button_click():
-
+    add_prod = buy_list.curselection()
+    add_prod_idx = add_prod[0]
+    player.buy(add_prod_idx)
 
     update_balance()
     update_inventory()
+    update_Shop_list()
 
 def add_button_click():
     pass
@@ -121,7 +130,8 @@ buy_button = Button(right_panel,
                     font=("Comic Sans MS", 20, "bold"),
                     bd=6,
                     image=buy_button_image,
-                    compound="right"
+                    compound="right",
+                    command=buy_button_click
                     )
 buy_button.pack(side="bottom", fill="x", padx=0, pady=20)
 
@@ -212,5 +222,6 @@ buy_list.pack(fill="x", side="bottom")
 
 update_balance()
 update_inventory()
+update_Shop_list()
 
 window.mainloop()

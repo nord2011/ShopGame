@@ -11,7 +11,10 @@ class Product:
 
     def stak_product(self):
         if self.stak:
-            quanity = 1
+            self.quantity = 1
+
+
+
 
 
 class Player:
@@ -20,6 +23,7 @@ class Player:
         self.balance = initial_balance
         self.inventory = []  # Список объектов Product
         self.max_storage = max_storage
+        self.shop = Shop(name="shop1")
 
     def get_total_items(self):
         """Получить общее количество товаров на складе"""
@@ -36,7 +40,28 @@ class Player:
                 return product
         return None
 
-    def buy(self, product_name, quantity_to_buy):
+    def find_product_buy(self, product_name):
+        for product in self.shop.shop_list:
+            if product.name == product_name:
+                return product
+        return None
+
+    def buy(self, product_idx):
+        buy_name = self.shop.shop_list[product_idx].name
+        self.buy_name_prod(buy_name, quantity_to_buy=1)
+
+    def quantity_product(self, product):
+        for product_i in self.shop.shop_list:
+            if product.name == product_i.name:
+                if product_i.quantity <= 0:
+                    self.shop.shop_list.remove(product_i)
+
+
+
+
+
+    def buy_name_prod(self, product_name, quantity_to_buy):
+
         """
         Купить товар
 
@@ -44,7 +69,7 @@ class Player:
         1. Хватает ли денег
         2. Хватает ли места на складе
         """
-        product = self.find_product(product_name)
+        product = self.find_product_buy(product_name)
 
         if product is None:
             print(f"Товар '{product_name}' не найден в ассортименте")
@@ -63,12 +88,23 @@ class Player:
             print(f"Недостаточно места на складе! Нужно: {required_space}, свободно: {self.get_free_space()}")
             return False
 
+
+
         # Совершение покупки
+        if product.quantity - quantity_to_buy < 0:
+            print("В магазине нету столько товара!")
+            return False
+
         self.balance -= total_cost
-        product.quantity += quantity_to_buy
+        self.inventory.append(product)
+###################### Ошибка ##########################
+        product.quantity -= quantity_to_buy
+        self.quantity_product(product)
         print(f"Куплено {quantity_to_buy} шт. товара '{product_name}' за {total_cost}")
         print(f"Баланс: {self.balance}, на складе: {product.quantity} шт.")
-        return True
+
+
+
 
     def sell_by_product_name(self, product_name, quantity_to_sell):
         """
@@ -146,6 +182,13 @@ class Shop:
             Product(name="Лук", purchase_price=350, sell_price=270, stak=False)
 
         ]
+
+    def delete_product(self, product):
+        for product_a in self.shop_list:
+            if product.name == product_a.name:
+                self.shop_list.remove(product_a)
+                return True
+        return False
 
 # Демонстрация работы программы
 def main():
