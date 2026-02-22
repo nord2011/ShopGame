@@ -30,7 +30,7 @@ def update_inventory():
 def update_Shop_list():
     buy_list.delete(0, END)
 
-    for shop in Shop.shop_list:
+    for shop in player.shop.shop_list:
         buy_list.insert(END,f"{shop.name} // Стоимость покупки: {shop.purchase_price}// Стоимость продажи: {shop.sell_price} // Количество: {shop.quantity}")
 
 
@@ -65,7 +65,7 @@ def sell_button_click():
 def buy_button_click():
     add_prod = buy_list.curselection()
     add_prod_idx = add_prod[0]
-    player.buy(add_prod_idx)
+    player.buy(add_prod_idx, quantity_to_buy=1)
 
     update_balance()
     update_inventory()

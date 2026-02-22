@@ -1,3 +1,6 @@
+from itertools import product
+import copy
+
 class Product:
     def __init__(self, name, purchase_price, sell_price, quantity=1, stak=False):
         self.name = name
@@ -46,9 +49,50 @@ class Player:
                 return product
         return None
 
-    def buy(self, product_idx):
-        buy_name = self.shop.shop_list[product_idx].name
-        self.buy_name_prod(buy_name, quantity_to_buy=1)
+    def buy(self, product_idx, quantity_to_buy):
+        product_ = self.shop.shop_list[product_idx]
+
+        if product_ is None:
+            print(f"Товар не найден в ассортименте")
+            return False
+
+        ####Общая стоимость####
+
+        total_cost = product_.purchase_price * quantity_to_buy
+
+
+        ####Проверки####
+        if self.balance < total_cost:
+            print(f"Недостаточно средств! Нужно: {total_cost}, есть: {self.balance}")
+            return False
+
+        if self.get_free_space() < quantity_to_buy:
+            print(f"Недостаточно места на складе! Нужно: {quantity_to_buy}, свободно: {self.get_free_space()}")
+            return False
+
+        if product_.quantity - quantity_to_buy < 0:
+            print("В магазине нету столько товара!")
+            return False
+
+        new_product = copy.deepcopy(product_)
+
+        self.balance -= total_cost
+        self.inventory.append(new_product)
+
+        ###################### Ошибка ##########################
+
+        self.shop.shop_list[product_idx].quantity -= quantity_to_buy
+        self.quantity_product(product_)
+
+
+        print(f"Куплено {quantity_to_buy} шт. товара '{product_.name}' за {total_cost}")
+        print(f"Баланс: {self.balance}, на складе: {product_.quantity} шт.")
+
+        return True
+
+
+
+        ##self.buy_name_prod(buy_name, product_idx, quantity_to_buy=1)
 
     def quantity_product(self, product):
         for product_i in self.shop.shop_list:
@@ -60,7 +104,7 @@ class Player:
 
 
 
-    def buy_name_prod(self, product_name, quantity_to_buy):
+    def buy_name_prod(self, product_name, product_idx, quantity_to_buy):
 
         """
         Купить товар
@@ -95,11 +139,17 @@ class Player:
             print("В магазине нету столько товара!")
             return False
 
+        new_product = copy.deepcopy(product)
+
         self.balance -= total_cost
-        self.inventory.append(product)
+        self.inventory.append(new_product)
+
+
 ###################### Ошибка ##########################
-        product.quantity -= quantity_to_buy
+
+        self.shop.shop_list[product_idx].quantity -= quantity_to_buy
         self.quantity_product(product)
+
         print(f"Куплено {quantity_to_buy} шт. товара '{product_name}' за {total_cost}")
         print(f"Баланс: {self.balance}, на складе: {product.quantity} шт.")
 
