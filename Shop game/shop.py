@@ -44,6 +44,7 @@ class Player:
         return None
 
     def find_product_buy(self, product_name):
+        """  Найти товар в МАГАЗИНЕ  """
         for product in self.shop.shop_list:
             if product.name == product_name:
                 return product
@@ -77,9 +78,22 @@ class Player:
         new_product = copy.deepcopy(product_)
 
         self.balance -= total_cost
-        self.inventory.append(new_product)
+        """self.inventory.append(new_product)"""
 
-        ###################### Ошибка ##########################
+        if not new_product.stak:
+            self.inventory.append(new_product)
+        elif not self.find_product(new_product.name) is None:
+            for idx in range(len(self.inventory)):
+                if self.inventory[idx].name == new_product.name:
+                    self.inventory[idx].quantity += quantity_to_buy
+                    break
+        else:
+            new_product.quantity = 1
+            self.inventory.append(new_product)
+            pass
+
+
+
 
         self.shop.shop_list[product_idx].quantity -= quantity_to_buy
         self.quantity_product(product_)
@@ -104,15 +118,15 @@ class Player:
 
 
 
-    def buy_name_prod(self, product_name, product_idx, quantity_to_buy):
+    """def buy_name_prod(self, product_name, product_idx, quantity_to_buy):
 
-        """
+    
         Купить товар
 
         Проверки:
         1. Хватает ли денег
         2. Хватает ли места на складе
-        """
+    
         product = self.find_product_buy(product_name)
 
         if product is None:
@@ -151,7 +165,7 @@ class Player:
         self.quantity_product(product)
 
         print(f"Куплено {quantity_to_buy} шт. товара '{product_name}' за {total_cost}")
-        print(f"Баланс: {self.balance}, на складе: {product.quantity} шт.")
+        print(f"Баланс: {self.balance}, на складе: {product.quantity} шт.")"""
 
 
 
@@ -222,6 +236,12 @@ class Player:
         for i, product in enumerate(self.inventory, 1):
             print(f"{i}. {[product.name]}")
         print()
+
+    def del_product_inventory(self, product_idx):
+        self.inventory.pop(product_idx)
+
+    def del_product_shop(self, product_idx):
+        self.shop.shop_list.pop(product_idx)
 
 class Shop:
     def __init__(self, name):

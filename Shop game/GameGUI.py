@@ -1,5 +1,6 @@
 from itertools import product
 from tkinter import *
+from tkinter.messagebox import showerror, showinfo, showwarning
 import shop
 
 
@@ -47,13 +48,12 @@ def more_button_click():
 
 def sell_button_click():
     del_prod = inventory_list.curselection()
-    del_prod_idx = del_prod[0]
-    """if player.inventory[del_prod_idx].stak:
-        player.inventory[del_prod_idx].quantity -= 1
-        player.balance += player.inventory[del_prod_idx].sell_price
-    else:
-        player.balance += player.inventory[del_prod_idx].sell_price
-        player.inventory.pop(del_prod_idx)"""
+    try:
+        del_prod_idx = del_prod[0]
+    except IndexError:
+        print("Выберите товар для продажи")
+        showinfo(title="Подсказка", message="Выберите товар для продажи! (нажать на товар в списке инвентаря)")
+        return
     player.sell(del_prod_idx)
 
 
@@ -64,7 +64,13 @@ def sell_button_click():
 
 def buy_button_click():
     add_prod = buy_list.curselection()
-    add_prod_idx = add_prod[0]
+    try:
+        add_prod_idx = add_prod[0]
+    except IndexError:
+        print("Выберите товар для покупки")
+        showinfo(title="Подсказка", message="Выберите товар для покупки! (нажать на товар в списке магазина)" )
+        return
+
     player.buy(add_prod_idx, quantity_to_buy=1)
 
     update_balance()
@@ -75,7 +81,12 @@ def add_button_click():
     pass
 
 def del_button_click():
-    pass
+    ## Доделать проверки ##
+    if not inventory_list.curselection() is None:
+        player.del_product_inventory(inventory_list.curselection()[0])
+
+    update_inventory()
+    update_Shop_list()
 
 def back_button_click():
     back_button.pack_forget()
@@ -170,7 +181,8 @@ del_button = Button(right_panel,
                     bg="black",
                     fg="red",
                     font=("Comic Sans MS", 20, "bold"),
-                    bd=6)
+                    bd=6,
+                    command=del_button_click)
 
 back_button = Button(right_panel,
                      text="Back",
