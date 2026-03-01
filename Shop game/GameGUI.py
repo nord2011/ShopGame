@@ -78,14 +78,50 @@ def buy_button_click():
     update_Shop_list()
 
 def add_button_click():
-    pass
+    add_window = Toplevel(window)
+    add_window.title("Добавление товара (предмета)")
+    add_window.geometry("430x430")
+    add_window.resizable(False, False)
+    add_window.configure(bg="black")
+
+
+    Label(add_window,text=f"Название: ",bg="black",fg="white").pack(pady=5,anchor="w")
+    name_entry = Entry(add_window)
+    name_entry.place(x=10,y=25, width=80)
+
+    Label(add_window, text=f"Стоимость покупки: ", bg="black", fg="white").pack(pady=15, anchor="w")
+    purchase_entry = Entry(add_window)
+    purchase_entry.place(x=10,y=67, width=80)
+
+    Label(add_window, text=f"Стоимость продажи: ", bg="black", fg="white").pack(pady=5, anchor="w")
+    sell_entry =  Entry(add_window)
+    sell_entry.place(x=10, y=109, width=80)
+
+    Label(add_window, text=f"Количество: ", bg="black", fg="white").pack(pady=15, anchor="w")
+    quantity_entry = Entry(add_window)
+    quantity_entry.place(x=10, y=151, width=80)
+
+    Label(add_window, text=f"Стакается: ", bg="black", fg="white").pack(pady=7, anchor="w")
+    stackable = BooleanVar()
+    stackable.set(True)
+    stak_checkbox = Checkbutton(
+        add_window,
+        variable=stackable,
+        bg="black",
+        fg="white",
+        activebackground="black",
+        activeforeground="white",
+        selectcolor="grey")
+    stak_checkbox.place(x=10, y=193, width=80)
 
 def del_button_click():
-    ## Доделать проверки ##
-    if not inventory_list.curselection() is None:
+    ## Доделать проверки #
+    if len(inventory_list.curselection()) > 0:
         player.del_product_inventory(inventory_list.curselection()[0])
+    elif len(buy_list.curselection()) > 0:
+        player.del_product_shop(buy_list.curselection()[0])
     else:
-        player.del_product_inventory(buy_list.curselection()[0])
+        showinfo(title="Подсказка", message="Выберите предмет из инвентаря или магазина!")
 
     update_inventory()
     update_Shop_list()
@@ -176,7 +212,8 @@ add_button = Button(right_panel,
                     bg="black",
                     fg="green",
                     font=("Comic Sans MS", 20, "bold"),
-                    bd=6)
+                    bd=6,
+                    command=add_button_click)
 
 del_button = Button(right_panel,
                     text="Del",
