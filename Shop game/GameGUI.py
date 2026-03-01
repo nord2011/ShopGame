@@ -84,6 +84,8 @@ def del_button_click():
     ## Доделать проверки ##
     if not inventory_list.curselection() is None:
         player.del_product_inventory(inventory_list.curselection()[0])
+    else:
+        player.del_product_inventory(buy_list.curselection()[0])
 
     update_inventory()
     update_Shop_list()
